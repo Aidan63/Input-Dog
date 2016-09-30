@@ -70,7 +70,7 @@ if(selected)
     var DONE = false;
     if(gamepad)
     {
-            var GAMEPAD_DOWN = inputdog_get_gamepad_input_down(INPUT_MANAGER.gamepadSlot, INPUT_MANAGER.directInput);
+            var GAMEPAD_DOWN = inputdog_get_gamepad_input_down(INPUT_MANAGER.gamepadSlot);
             if(GAMEPAD_DOWN != -1)
             {
                 ds_map_replace(INPUT_MANAGER.customGamepadInputs,input,

@@ -40,12 +40,9 @@ customGamepadInputs = ds_map_create();
 inputdog_load_default_keyboard_mapping();
 inputdog_load_default_gamepad_mapping();
 
-directInput = false;
-
 inputdog_load_custom_controls();
 
 gamepadSlot = -1;
-event_perform(ev_alarm,0); //check for gamepads
 
 inputsDown = ds_map_create();
 var i;
@@ -63,8 +60,6 @@ rumble = 0;
 
 analogDeadzone = 0.25; //when the analog value is big enough to be player input
 analogDownDeadzone = 0.5; //when the analog val is enough to be a press
-
-event_perform(ev_alarm,0); // find gamepads
 
 if(object_index == InputManager)
     show_error("InputManager is a parent object that should not be instantiated. Try making InputForPlayer1 instead!",true);
@@ -137,32 +132,6 @@ ds_map_destroy(replayLog);
         </arguments>
       </action>
     </event>
-    <event eventtype="2" enumb="0">
-      <action>
-        <libid>1</libid>
-        <id>603</id>
-        <kind>7</kind>
-        <userelative>0</userelative>
-        <isquestion>0</isquestion>
-        <useapplyto>-1</useapplyto>
-        <exetype>2</exetype>
-        <functionname></functionname>
-        <codestring></codestring>
-        <whoName>self</whoName>
-        <relative>0</relative>
-        <isnot>0</isnot>
-        <arguments>
-          <argument>
-            <kind>1</kind>
-            <string>///search for gamepads
-if(directInput)
-    inputdog_search_for_joysticks();
-
-</string>
-          </argument>
-        </arguments>
-      </action>
-    </event>
     <event eventtype="3" enumb="1">
       <action>
         <libid>1</libid>
@@ -194,17 +163,8 @@ for(i=0; i&lt;ds_list_size(inputs); i++)
     if(gamepadSlot != -1)
     {   
         // i like to allow the keyboard to still work even when a gamepad is plugged in
-        var MAX = max(inputdog_down(INPUT,playerSlot), inputdog_check_gamepad_input(gamepadSlot, ds_map_find_value(customGamepadInputs,INPUT),directInput));
+        var MAX = max(inputdog_down(INPUT,playerSlot), inputdog_check_gamepad_input(gamepadSlot, ds_map_find_value(customGamepadInputs,INPUT)));
         ds_map_replace(inputsDown, INPUT, MAX);
-    }
-}
-
-// If direct input mode is being used and alarm 0 isn't active start the timer to check for gamepad changes
-if (directInput)
-{
-    if (alarm[0] == -1)
-    {
-        alarm[0] = 120;
     }
 }
 
@@ -366,15 +326,18 @@ switch (ds_map_find_value(async_load, "event_type"))
 {
     // Gamepad Connected
     case "gamepad discovered":
+        
         if (gamepadSlot == -1)
         {
             var _pad      = ds_map_find_value(async_load, "pad_index");
-            var _padInUse = inputdog_is_slot_in_use(_pad, false);
+            var _padInUse = inputdog_is_slot_in_use(_pad);
+            
+            show_debug_message("Looking for a GP, can we use GP " + string(_pad) + "? Is in use : " + string(_padInUse));
             
             if (!_padInUse)
             {
                 gamepadSlot = _pad;
-                show_debug_message("found gamepad");
+                show_debug_message("Now using GP " + string(_pad));
             }
         }
     break;
@@ -386,7 +349,7 @@ switch (ds_map_find_value(async_load, "event_type"))
         if (_pad == gamepadSlot)
         {
             gamepadSlot = -1;
-            show_debug_message("gamepad disconnected");
+            show_debug_message("~~~~~gamepad disconnected " + string(_pad));
         }
     break;
 }

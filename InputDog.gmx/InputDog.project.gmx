@@ -50,7 +50,6 @@
         <script>scripts\inputdog_is_slot_in_use.gml</script>
         <script>scripts\inputdog_keyboard_check_direct.gml</script>
         <script>scripts\inputdog_search_for_gamepads.gml</script>
-        <script>scripts\inputdog_search_for_joysticks.gml</script>
         <script>scripts\inputdog_tween.gml</script>
       </scripts>
       <script>scripts\inputdog_analog.gml</script>

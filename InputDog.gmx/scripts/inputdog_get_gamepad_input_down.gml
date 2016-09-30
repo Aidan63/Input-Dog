@@ -1,7 +1,6 @@
-///inputdog_get_gamepad_input_down(slot, directInput)
+///inputdog_get_gamepad_input_down(slot)
 
 var SLOT = argument0;
-var DIRECT_INPUT = argument1;
 var INPUTS = ds_list_create();
 ds_list_add(INPUTS, gp_face1);
 ds_list_add(INPUTS, gp_face2);
@@ -40,7 +39,7 @@ var INPUT_DOWN = -1;
 for(i=0; i<ds_list_size(INPUTS); i++)
 {
     var INPUT = ds_list_find_value(INPUTS,i);
-    if(inputdog_check_gamepad_input(SLOT,INPUT,DIRECT_INPUT) > 0.5)
+    if(inputdog_check_gamepad_input(SLOT,INPUT) > 0.5)
     {
         INPUT_DOWN = INPUT;
         break;
